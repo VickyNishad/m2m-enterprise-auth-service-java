@@ -1,0 +1,70 @@
+
+server:
+  port: 8080
+  error:
+    include-message: never
+    include-binding-errors: never
+
+spring:
+  application:
+    name: m2m-authentication-service-java
+
+  # Database Connection
+  datasource:
+    url: jdbc:mysql://localhost:3306/enterprise_auth_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: root
+    password: Root@123
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      pool-name: AuthHikariCP
+      maximum-pool-size: 20
+      minimum-idle: 5
+      idle-timeout: 300000
+      max-lifetime: 1200000
+      connection-timeout: 20000
+
+  # JPA & Hibernate
+  jpa:
+    hibernate:
+      ddl-auto: validate # Hibernate validates that Flyway created the tables
+    open-in-view: false   # Disables OSIV pattern for high-throughput REST APIs
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+        dialect: org.hibernate.dialect.MySQLDialect
+
+  # Flyway Schema Migrations
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    baseline-version: 0
+    locations: classpath:db/migration
+    validate-on-migrate: true
+
+# Custom JWT Security Configuration
+security:
+  jwt:
+    # 256-bit Base64-encoded secret key for HMAC-SHA256 signing
+    secret-key: 54686973497341566572795365637572654B65795468617449733235364269747321
+    access-token-expiration-ms: 900000       # 15 Minutes
+    refresh-token-expiration-ms: 604800000   # 7 Days
+
+# SpringDoc OpenAPI 3 / Swagger UI
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+    try-it-out-enabled: true
+
+# Logging Configuration
+logging:
+  level:
+    root: INFO
+    com.vickynishad.tech.m2m: DEBUG
+    org.springframework.security: INFO
+    org.flywaydb: INFO
